@@ -5,9 +5,9 @@ function p.project(lp, cam_pos, look, left, up)
     local fov_aspect   = (0.5 / aspect) * fov_scale  
     local half_fov     = 0.5 * fov_scale             
 
-    local rx = corner.x - cam_pos.x
-    local ry = corner.y - cam_pos.y
-    local rz = corner.z - cam_pos.z
+    local rx = lp.x - cam_pos.x
+    local ry = lp.y - cam_pos.y
+    local rz = lp.z - cam_pos.z
 
     local depth = std.dot(std.vec(rx, ry, rz), look)
     if depth <= 0 then
