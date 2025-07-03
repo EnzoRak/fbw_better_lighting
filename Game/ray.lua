@@ -30,6 +30,15 @@ p.c = obj.class("Ray", nil, {
             self.hit = true
             self.hit_pos = std.vec_add(self.origin, std.vec_scale(self.look, l0))
             self.bp = std.lp_to_bp(std.vec_add(self.origin, std.vec_scale(self.look, l)))
+            -- figuring out the normal.
+            local pos = std.vec_scale(std.vec_sub(self.hit_pos, std.block_center(self.bp)),2)
+            local closest = 0
+            for i = 1,5 do
+                if std.dist(std.side_int_to_vec(i),self.hit_pos) < std.dist(std.side_int_to_vec(closet),self.hit_pos) then
+                    closest = i
+                end
+            end
+            self.normal = std.side_int_to_vec(closest)
         end
         return self
     end
