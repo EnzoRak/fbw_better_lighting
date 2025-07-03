@@ -40,6 +40,7 @@ p.c = obj.class("Ray", nil, {
                 end
             end
             self.normal = std.side_int_to_vec(closest)
+            self.length = l
         end
         return self
     end
