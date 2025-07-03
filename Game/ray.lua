@@ -1,7 +1,7 @@
 p.c = obj.class("Ray", nil, {
-    new = function(self, look, len)
-        self.origin = ga_get_viewer_offset()
-        self.level = ga_get_viewer_level()
+    new = function(self, look, origin, level, len)
+        self.origin = origin or ga_get_viewer_offset()
+        self.level = level or ga_get_viewer_level()
         self.look = look
         self.len = len or 256
         return self
