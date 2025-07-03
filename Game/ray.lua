@@ -9,7 +9,7 @@ p.c = obj.class("Ray", nil, {
     cast = function(self)
         local function c(l) return ga_vis_test_level(self.level, self.origin, std.vec_add(self.origin, std.vec_scale(self.look, l))) end
         local l = self.len
-        local l0 = 0.01
+        local l0 = 0
         local result = 0
         if c(l) then
             result = 1 -- no blocks in the ray's length
@@ -22,7 +22,7 @@ p.c = obj.class("Ray", nil, {
             else
                 l = (l0+l)/2
             end
-            if l-l0 < 0.01 then
+            if l-l0 < 0.05 then
                 result = 2
                 break
             end
