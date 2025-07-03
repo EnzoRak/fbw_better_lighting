@@ -93,7 +93,7 @@ function p.class(name, parent, data)
         return
     end
 
-    mt.__call = ret.new
+    mt.__call = function(self, ...) return ret.new(p.class(name, parent, data), ...) end
 
     setmetatable(ret, mt)
 
