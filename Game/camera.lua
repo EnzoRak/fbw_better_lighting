@@ -1,24 +1,9 @@
--- p.c = obj.class("Camera", nil, {
---     new = function(self, cam_pos, look, left, up)
---         self.pos = cam_pos
---         self.look = look
---         self.left = left
---         self.up = up
---         return self
---     end,
---     rasterize = function(self, wid)
---         local r = ray.c(self.look)
---         ga_print("rasterization function")
---         ga_print(r.look)
-        
---         return self
---     end
--- })
+
 local old_pos = ga_get_viewer_offset()
 local old_look = ga_get_sys_v("game.player.camera.look")
 local old_up = ga_get_sys_v("game.player.camera.up")
-local x_res_start = 16
-local y_res_start = 8
+local x_res_start = 16 *3
+local y_res_start = 8 *3
 local upscale = 1
 local upscale_timer = 0
 local data = {}
@@ -31,14 +16,8 @@ function p.tick()
         local not_moving = std.dist(old_pos, ga_get_viewer_offset()) < 0.0001 and std.dist(old_look, ga_get_sys_v("game.player.camera.look")) == 0 and std.dist(old_up, ga_get_sys_v("game.player.camera.up")) == 0
         if not not_moving then upscale = 1 end
         if not_moving and upscale_timer > 0 then
-            --[[for x = 1, x_res do
-                for y = 1, y_res do
-                    if not data[x] then break end
-                    ga_win_quad_color_alpha(wid, (x-1)/x_res, (y-1)/y_res, x/x_res, y/y_res, std.vec(0,0,0), data[x][y] or 1)
-                end
-            end]]
             for _,v in ipairs(data) do
-                ga_win_quad_color_alpha(wid, v[1], v[2], v[3], v[4], std.vec(0,0,0), v[6] or 1)
+                -- ga_win_quad_color_alpha(wid, v[1], v[2], v[3], v[4], std.vec(0,0,0), v[6] or 1)
             end
         else
             old_pos = ga_get_viewer_offset()
@@ -59,16 +38,6 @@ function p.tick()
 
             for x = 1, x_res do
                 for y = 1, y_res do
-                    --local printCameraVector = std.vec_to_str(ga_get_sys_v("game.player.camera.look"))
-                    --ga_print("camera vector: " .. printCameraVector)
-
-                    --local r = ray.c(ga_get_sys_v("game.player.camera.look"))
-                    --ga_print("ray vector: " .. std.vec_to_str(r.look))
-
-                    --local cam_vec = ga_get_sys_v("game.player.camera.look")
-
-                    
-                    --local ray_vec = cam_vec + { }
                     
                     local point_local = bottom_left_local + Vector3.new(plane_width * x/x_res, plane_height * y/y_res, 0)
                     local point = Vector3.new(ga_get_viewer_offset()) + right * point_local.x + up * point_local.y + look * point_local.z
@@ -79,7 +48,18 @@ function p.tick()
                     r:cast()
 
                     local length = r.hit and r.length/64 or 0.875
-                    ga_win_quad_color_alpha(wid, (x-1)/x_res, (y-1)/y_res, x/x_res, y/y_res, std.vec(0,0,0), length)
+                    -- ga_win_quad_color_alpha(wid, (x-1)/x_res, (y-1)/y_res, x/x_res, y/y_res, std.vec(0,0,0), length)
+
+                    -- only project where rays hit
+                    if r.hit then
+                        -- ga_win_quad_color(wid, (x-1)/x_res, (y-1)/y_res, x/x_res, y/y_res, std.vec(0,0,0))
+                        ga_print("This is face normal: " .. std.vec_to_str(r.normal) .. " and here is each value: " .. r.normal.x)
+                        ga_win_quad_color_alpha(wid, (x-1)/x_res, (y-1)/y_res, x/x_res, y/y_res, std.vec(r.normal.x,r.normal.y,r.normal.z), 1)
+
+                        -- Ezno's work
+                        -- ga_win_quad_color_alpha(wid, (x-1)/x_res, (y-1)/y_res, x/x_res, y/y_res, std.vec(0,0,0), length)
+                    end
+
                     if data[#data] and math.abs(data[#data][3]-x/x_res) < 0.001 and math.abs(data[#data][6]-length) < 0.01 then
                         data[#data][4] = data[#data][4] + 1/y_res
                     else
