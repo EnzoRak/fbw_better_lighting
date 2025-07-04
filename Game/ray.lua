@@ -1,4 +1,4 @@
-local cache = {} -- huge cache
+--local cache = {} -- huge cache
 
 p.c = obj.class("Ray", nil, {
     new = function(self, look, origin, level, len)
@@ -9,8 +9,8 @@ p.c = obj.class("Ray", nil, {
         return self
     end,
     cast = function(self)
-        local cache_key = self.level .. "_" .. std.vec_to_str(self.origin) .. "_" .. std.vec_to_str(self.look) .. "_" .. self.len
-        if cache[cache_key] then
+        --local cache_key = self.level .. "_" .. std.vec_to_str(self.origin) .. "_" .. std.vec_to_str(self.look) .. "_" .. self.len
+        --[[if cache[cache_key] then
             local c = cache[cache_key]
             if c.result == 2 then
                 self.hit = true
@@ -20,14 +20,14 @@ p.c = obj.class("Ray", nil, {
                 self.length = c.length
             end
             return self
-        end
+        end]]
         local function c(l) return ga_vis_test_level(self.level, self.origin, std.vec_add(self.origin, std.vec_scale(self.look, l))) end
         local l = self.len
         local l0 = 0
         local result = 0
         if c(l) then
             result = 1 -- no blocks in the ray's length
-            cache[cache_key] = {result = 1}
+            --cache[cache_key] = {result = 1}
             return self
         end
         while result == 0 do -- dangerous!
@@ -57,14 +57,14 @@ p.c = obj.class("Ray", nil, {
             end
             self.normal = std.side_int_to_vec(closest)
             self.length = l
-            cache[cache_key] = {
+            --[[cache[cache_key] = {
                 result = 2,
                 hit = true,
                 hit_pos = self.hit_pos,
                 bp = self.bp,
                 normal = self.normal,
                 length = self.length
-            }
+            }]]
         end
         return self
     end

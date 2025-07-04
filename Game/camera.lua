@@ -17,14 +17,14 @@
 local old_pos = ga_get_viewer_offset()
 local old_look = ga_get_sys_v("game.player.camera.look")
 local old_up = ga_get_sys_v("game.player.camera.up")
-local x_res_start = 16
-local y_res_start = 8
+local x_res_start = 8
+local y_res_start = 4
 local upscale = 1
 local upscale_timer = 0
 local data = {}
 function p.tick()
     win_hud.add_element(0, function(wid)
-        if upscale < 25 then upscale_timer = upscale_timer - 1 end
+        if upscale < 500 then upscale_timer = upscale_timer - 1 end
         if upscale_timer <= 0 then upscale = upscale * 2 end
         local not_moving = std.dist(old_pos, ga_get_viewer_offset()) < 0.0001 and std.dist(old_look, ga_get_sys_v("game.player.camera.look")) == 0 and std.dist(old_up, ga_get_sys_v("game.player.camera.up")) == 0
         if not not_moving then upscale = 1 end
@@ -37,8 +37,10 @@ function p.tick()
                     ga_win_quad_color_alpha(wid, (x-1)/x_res, (y-1)/y_res, x/x_res, y/y_res, std.vec(0,0,0), data[x][y] or 1)
                 end
             end]]
-            for _,v in ipairs(data) do
-                ga_win_quad_color_alpha(wid, v[1], v[2], v[3], v[4], v[5], v[6] or 1)
+            if upscale > 10 then
+                for _,v in ipairs(data) do
+                    ga_win_quad_color_alpha(wid, v[1], v[2], v[3], v[4], v[5], v[6] or 1)
+                end
             end
         else
             old_pos = ga_get_viewer_offset()
@@ -76,7 +78,7 @@ function p.tick()
                 end
             end
         end
-        if upscale_timer <= 0 or not not_moving then upscale_timer = 10*upscale end
+        if upscale_timer <= 0 or not not_moving then upscale_timer = math.min(100,2*upscale) end
     end)
 end
 
