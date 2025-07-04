@@ -79,12 +79,12 @@ function p.draw(wid)
                     end
                 end]]
                 
-                local r = ray.c(dir, nil, nil, 64)
+                local r = ray.c(dir, nil, nil, 56)
 
                 r:cast()
                 
                 local col = std.vec(0,0,0)
-                local alpha = (r.length or 64)/64
+                local alpha = (r.length or 56)/64
                 ga_win_quad_color_alpha(wid, (x-1)*x_f, (y-1)*y_f, x*x_f, y*y_f, col, alpha)
                 if data[#data] and data[#data][3] == x*x_f and data[#data][4] == (y-1)*y_f and math.abs(data[#data][6]-alpha) < 0.015 and std.dist_linf(data[#data][5], col) < 0.006 then
                     data[#data][4] = y*y_f
