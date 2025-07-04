@@ -31,12 +31,13 @@ p.c = obj.class("Ray", nil, {
             return self
         end
         while result == 0 do -- dangerous!
-            local mid = c((l0+l)/2)
+            local midpos = (l0+l)*0.5
+            local mid = c(midpos)
             --ga_print("vec length: "..l..", mid: "..mid..", midpoint: "..(l0+l)/2)
             if mid then
-                l0 = (l0+l)/2
+                l0 = midpos
             else
-                l = (l0+l)/2
+                l = midpos
             end
             if l-l0 < 0.05 then
                 result = 2
