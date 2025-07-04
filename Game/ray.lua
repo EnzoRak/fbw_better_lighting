@@ -52,7 +52,7 @@ p.c = obj.class("Ray", nil, {
             local pos = std.vec_scale(std.vec_sub(self.hit_pos, std.block_center(self.bp)),2)
             local closest = 0
             for i = 1,5 do
-                if std.dist(std.side_int_to_vec(i),pos) < std.dist(std.side_int_to_vec(closest),pos) then
+                if std.dist_linf(std.side_int_to_vec(i),pos) < std.dist_linf(std.side_int_to_vec(closest),pos) then
                     closest = i
                 end
             end

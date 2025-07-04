@@ -24,5 +24,5 @@ function p.tick()
 end
 
 function p.__update_discrete_pre()
-    p.tick()
+    --p.tick()
 end
