@@ -38,17 +38,17 @@ end]]
 function p.draw(wid)
     --if true then return end
     
-    if upscale < 100 then upscale_timer = upscale_timer - 1 end
+    if upscale < 2^cfg.get(2) then upscale_timer = upscale_timer - 1 end
     if upscale_timer <= 0 then upscale = upscale * 2 end
     local not_moving = std.dist_linf(old_pos, ga_get_viewer_offset()) < 0.0001 and std.dist_linf(old_look, ga_get_sys_v("game.player.camera.look")) < 0.0001 and std.dist(old_up, ga_get_sys_v("game.player.camera.up")) < 0.0001
-    if not not_moving then upscale = 1 end
+    if not not_moving then upscale = 2^cfg.get(1) end
     local x_res = x_res_start * upscale
     local y_res = y_res_start * upscale
     if not_moving and upscale_timer > 0 then
         for _,v in ipairs(data) do
             ga_win_quad_color_alpha(wid, v[1], v[2], v[3], v[4], v[5], v[6] or 1)
         end
-        ga_win_txt(wid, 0.6, 0.6, "#data " .. #data)
+        --ga_win_txt(wid, 0.6, 0.6, "#data " .. #data)
     else
         old_pos = ga_get_viewer_offset()
         old_look = ga_get_sys_v("game.player.camera.look")
@@ -78,20 +78,30 @@ function p.draw(wid)
                         goto continue -- we will be hidden by the ui element, so we will not render this pixel
                     end
                 end]]
+
+                local func,err = load("local dir = ({...})[1];" .. cfg.get_shader_code())
+
+                local col,alpha = col or std.vec(0,0,0),alpha or 0
+                if func then
+                    col,alpha = func(dir)
+                    col,alpha = col or std.vec(0,0,0),alpha or 0
+                else
+                    ga_print("*** Error: Couldn't Compile Shader because " .. err)
+                end
                 
-                local r = ray.c(dir, nil, nil, 56)
+                --[[local r = ray.c(dir, nil, nil, 56)
 
                 r:cast()
                 
                 local col = std.vec(0,0,0)
-                local alpha = (r.length or 56)/64
+                local alpha = (r.length or 56)/64]]
                 ga_win_quad_color_alpha(wid, (x-1)*x_f, (y-1)*y_f, x*x_f, y*y_f, col, alpha)
                 if data[#data] and data[#data][3] == x*x_f and data[#data][4] == (y-1)*y_f and math.abs(data[#data][6]-alpha) < 0.015 and std.dist_linf(data[#data][5], col) < 0.006 then
                     data[#data][4] = y*y_f
                 else
                     data[#data+1] = {(x-1)*x_f, (y-1)*y_f, x*x_f, y*y_f, col, alpha}
                 end
-                ::continue::
+                --::continue::
             end
             if x_res > 100 then ga_print("Rendering... (" .. math.floor(x*x_f*100) .. "%)") end
         end
@@ -101,5 +111,5 @@ function p.draw(wid)
 end
 
 function p.__load_game_early()
-    ga_hud_window_add("shader", -4)
+    ga_hud_window_add("shader_mod", -4)
 end

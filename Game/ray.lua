@@ -21,18 +21,19 @@ p.c = obj.class("Ray", nil, {
             end
             return self
         end]]
-        local function c(l) return ga_vis_test_level(self.level, self.origin, std.vec_add(self.origin, std.vec_scale(self.look, l))) end
+        --local function c(l) return ga_vis_test_level(self.level, self.origin, std.vec_add(self.origin, std.vec_scale(self.look, l))) end
+        local function c(l, l0) return ga_vis_test_level(self.level, std.vec_add(self.origin, std.vec_scale(self.look, l0)), std.vec_add(self.origin, std.vec_scale(self.look, l))) end
         local l = self.len
         local l0 = 0
         local result = 0
-        if c(l) then
+        if ga_vis_test_level(self.level, self.origin, std.vec_add(self.origin, std.vec_scale(self.look, l))) then
             result = 1 -- no blocks in the ray's length
             --cache[cache_key] = {result = 1}
             return self
         end
         while result == 0 do -- dangerous!
             local midpos = (l0+l)*0.5
-            local mid = c(midpos)
+            local mid = c(midpos, l0)
             --ga_print("vec length: "..l..", mid: "..mid..", midpoint: "..(l0+l)/2)
             if mid then
                 l0 = midpos
